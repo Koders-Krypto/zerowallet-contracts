@@ -1,0 +1,32 @@
+{
+  "name": "module-template-7579",
+  "version": "1.0.0",
+  "description": "A monorepo module template to develop using ERC-7579 standard",
+  "main": "dist/index.js",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "module",
+    "web"
+  ],
+  "scripts": {
+    "fmt:global": "prettier --write .",
+    "fmt:global-check": "prettier --check .",
+    "postinstall": "npm rebuild --skip-scripts @safe-global/safe-4337-local-bundler"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koshikraj/module-template-7579.git"
+  },
+  "author": "koshikraj",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/koshikraj/module-template-7579/issues"
+  },
+  "homepage": "https://github.com/koshikraj/module-template-7579/#readme",
+  "keywords": [
+    "Ethereum",
+    "7579",
+    "Safe"
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "name": "module-template-7579",
+  "version": "1.0.0",
+  "description": "Module template for 7579 module standard",
+  "homepage": "https://github.com/koshikraj/module-template-7579/tree/main/modules",
+  "license": "GPL-3.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "contracts",
+    "dist",
+    "src",
+    "test",
+    "build"
+  ],
+  "scripts": {
+    "build": "npm run build:sol",
+    "build:sol": "rimraf build typechain-types && hardhat compile",
+    "build:ts": "rimraf dist && tsc",
+    "test": "hardhat test --deploy-fixture",
+    "deploy-all": "hardhat deploy-contracts --network",
+    "deploy": "hardhat deploy --network",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koshikraj/module-template-7579.git"
+  },
+  "keywords": [
+    "Ethereum",
+    "Wallet",
+    "Safe",
+    "Safe module"
+  ],
+  "author": "@safe-global",
+  "bugs": {
+    "url": "https://github.com/koshikraj/module-template-7579/issues"
+  },
+  "devDependencies": {
+    "@account-abstraction/contracts": "^0.7.0",
+    "@ERC4337/account-abstraction": "github:kopy-kat/account-abstraction#develop",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
+    "@nomicfoundation/hardhat-ethers": "^3.0.5",
+    "@nomicfoundation/hardhat-foundry": "^1.1.1",
+    "@nomicfoundation/hardhat-ignition": "^0.15.4",
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.1",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.6",
+    "@nomicfoundation/ignition-core": "^0.15.4",
+    "@openzeppelin/contracts": "^4.9.2",
+    "@rhinestone/checknsignatures": "github:rhinestonewtf/checknsignatures",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/chai": "^4.3.14",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.30",
+    "@types/yargs": "^17.0.32",
+    "cbor": "^9.0.2",
+    "chai": "^4.4.1",
+    "debug": "^4.3.4",
+    "dotenv": "^16.4.5",
+    "erc7579": "github:erc7579/erc7579-implementation#main",
+    "ethers": "^6.11.1",
+    "ethersv5": "npm:ethers@^5",
+    "hardhat": "^2.22.2",
+    "hardhat-deploy": "^0.12.2",
+    "hardhat-gas-reporter": "^1.0.10",
+    "husky": "^9.0.11",
+    "sentinellist": "github:zeroknots/sentinellist",
+    "solady": "github:vectorized/solady",
+    "solc": "^0.8.25",
+    "solhint": "^4.5.2",
+    "solidity-coverage": "^0.8.12",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.4.3",
+    "yargs": "^17.7.2"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "@safe-global/safe-contracts": "^1.3.0",
+    "forge-std": "github:foundry-rs/forge-std",
+    "viem": "^2.9.31"
+  }
+}
