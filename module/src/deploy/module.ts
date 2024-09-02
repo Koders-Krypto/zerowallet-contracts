@@ -8,7 +8,7 @@ const deploy: DeployFunction = async ({ deployments, getNamedAccounts }) => {
 
   const entryPoint = await deployments.getOrNull('EntryPoint').then((deployment) => deployment?.address ?? ENTRY_POINT)
 
-  await deploy('OwnableValidator', {
+  await deploy('AutoDCASessionModule', {
     from: deployer,
     args: [],
     log: true,

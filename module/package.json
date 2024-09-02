@@ -50,6 +50,7 @@
     "@nomicfoundation/ignition-core": "^0.15.4",
     "@openzeppelin/contracts": "^4.9.2",
     "@rhinestone/checknsignatures": "github:rhinestonewtf/checknsignatures",
+    "@rhinestone/modulekit": "^0.4.6",
     "@typechain/ethers-v6": "^0.5.1",
     "@typechain/hardhat": "^9.1.0",
     "@types/chai": "^4.3.14",
