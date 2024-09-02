@@ -43,9 +43,9 @@ export const getMockTarget = async () => {
   return await ethers.getContractAt('MockTarget', ModuleDeployment.address)
 }
 
-export const getOwnableValidator = async () => {
-  const validator = await deployments.get('OwnableValidator')
-  return await ethers.getContractAt('OwnableValidator', validator.address)
+export const getAutoDCAModule = async () => {
+  const validator = await deployments.get('AutoDCASessionModule')
+  return await ethers.getContractAt('AutoDCASessionModule', validator.address)
 }
 
 export const getSafe7579 = async () => {
