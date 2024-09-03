@@ -1,0 +1,31 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node-dev src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@rhinestone/module-sdk": "^0.1.2",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.2",
+    "better-sqlite3": "^11.2.1",
+    "dotenv": "^16.4.5",
+    "ethers": "6.7.1",
+    "express": "^4.19.2",
+    "permissionless": "0.1.34",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2",
+    "viem": "^2.20.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/sqlite3": "^3.1.11"
+  }
+}
