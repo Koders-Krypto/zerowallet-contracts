@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors'; 
 import Database from 'better-sqlite3';
 import { getSessionData, isInstalled, sendTransaction } from './logic/module';
 import { ZeroAddress } from 'ethers';
@@ -9,10 +10,11 @@ import { Hex, PrivateKeyAccount } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 dotenv.config();
 app.use(express.json());
+app.use(cors()); // Use cors middleware
 
 const walletProvider: PrivateKeyAccount = privateKeyToAccount(process.env.PRIVATE_KEY! as Hex);
 const chainId = '137'
