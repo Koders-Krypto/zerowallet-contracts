@@ -104,6 +104,10 @@ const userConfig: HardhatUserConfig = {
       ...sharedNetworkConfig,
       url: `https://polygon-mainnet.infura.io/v3/${INFURA_KEY}`,
     },
+    arbitrum: {
+      ...sharedNetworkConfig,
+      url: `https://arb1.arbitrum.io/rpc`,
+    },
     sepolia: {
       ...sharedNetworkConfig,
       url: `https://sepolia.infura.io/v3/${INFURA_KEY}`,

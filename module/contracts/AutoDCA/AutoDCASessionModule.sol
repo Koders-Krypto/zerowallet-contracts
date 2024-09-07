@@ -3,8 +3,9 @@ pragma solidity ^0.8.23;
 
 import { Execution } from "modulekit/Accounts.sol";
 import {
-    ERC20Integration, ERC4626Integration, UniswapV3Integration
+    ERC20Integration, ERC4626Integration
 } from "modulekit/Integrations.sol";
+import { UniswapV3Integration } from "../integrations/Uniswap.sol";
 
 import { IERC20 } from "forge-std/interfaces/IERC20.sol";
 import { IERC4626 } from "forge-std/interfaces/IERC4626.sol";
