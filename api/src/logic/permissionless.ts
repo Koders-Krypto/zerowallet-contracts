@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { Hex, createPublicClient, http, Chain, Transport } from 'viem'
+import { Hex, createPublicClient, http, Chain, Transport, defineChain } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { base, baseSepolia, sepolia, polygon } from 'viem/chains'
 import {
@@ -23,6 +23,30 @@ import { publicClient } from './utils'
 dotenv.config();
 
 
+export const arbitrum = /*#__PURE__*/ defineChain({
+  id: 42_161,
+  name: 'Arbitrum',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['https://arb1.arbitrum.io/rpc'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Arbiscan',
+      url: 'https://arbiscan.io',
+      apiUrl: 'https://api.arbiscan.io/api',
+    },
+  },
+  contracts: {
+    multicall3: {
+      address: '0xca11bde05977b3631167028862be2a173976ca11',
+      blockCreated: 7654707,
+    },
+  },
+})
+
 export type SafeSmartAccountClient = SmartAccountClient<
   EntryPoint,
   Transport,
@@ -32,7 +56,7 @@ export type SafeSmartAccountClient = SmartAccountClient<
   Erc7579Actions<EntryPoint, SafeSmartAccount<EntryPoint>>
 
   export const getChain = (chainId: string) : Chain => {
-    return [base, polygon, sepolia, baseSepolia].find((chain: any) => chain.id == chainId) as Chain;
+    return [base, polygon, arbitrum, sepolia, baseSepolia].find((chain: any) => chain.id == chainId) as Chain;
   }
   
 

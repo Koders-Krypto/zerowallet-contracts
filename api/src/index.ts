@@ -14,18 +14,19 @@ const port = 8080;
 
 dotenv.config();
 app.use(express.json());
-app.use(cors()); // Use cors middleware
+app.use(cors());
 
 const walletProvider: PrivateKeyAccount = privateKeyToAccount(process.env.PRIVATE_KEY! as Hex);
-const chainId = '137'
 
 interface ScheduleRequest {
   sessionId: string;
+  chainId: string;
 }
 
 interface Job {
   id: string;
   sessionId: string;
+  chainId: string;
   startTime: Date;
   endTime: Date;
   interval: number;
@@ -45,6 +46,7 @@ function initDb() {
     CREATE TABLE IF NOT EXISTS jobs (
       id TEXT PRIMARY KEY,
       sessionId TEXT,
+      chainId TEXT,
       startTime TEXT,
       endTime TEXT,
       interval INTEGER,
@@ -58,19 +60,20 @@ function delay(ms: number) {
 }
 
 function saveJob(job: Job) {
-  const stmt = db.prepare('INSERT OR REPLACE INTO jobs (id, sessionId, startTime, endTime, interval, status) VALUES (?, ?, ?, ?, ?, ?)');
-  stmt.run(job.id, job.sessionId, job.startTime.toISOString(), job.endTime.toISOString(), job.interval, job.status);
+  const stmt = db.prepare('INSERT OR REPLACE INTO jobs (id, sessionId, chainId, startTime, endTime, interval, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
+  stmt.run(job.id, job.sessionId, job.chainId, job.startTime.toISOString(), job.endTime.toISOString(), job.interval, job.status);
 }
 
 function loadJobs() {
   const stmt = db.prepare('SELECT * FROM jobs WHERE status IN (\'scheduled\', \'running\')');
   const rows = stmt.all() as Array<{
-      sessionId: string;id: string, startTime: string, endTime: string, interval: number, status: 'scheduled' | 'running'
-}>;
+      id: string, sessionId: string, chainId: string, startTime: string, endTime: string, interval: number, status: 'scheduled' | 'running'
+  }>;
   for (const row of rows) {
     const job: Job = {
       id: row.id,
       sessionId: row.sessionId,
+      chainId: row.chainId,
       startTime: new Date(row.startTime),
       endTime: new Date(row.endTime),
       interval: row.interval,
@@ -80,8 +83,7 @@ function loadJobs() {
   }
 }
 
-
-async function executeJob(sessionId: string) {
+async function executeJob(sessionId: string, chainId: string) {
     const maxRetries = 10;
     const waitTime = 5000;
     let attempt = 0;
@@ -93,7 +95,6 @@ async function executeJob(sessionId: string) {
             const provider = await getJsonRpcProvider(chainId);
             const data = await buildTransferToken(sessionData.token, walletProvider.address, sessionData.limitAmount, provider);
             await sendTransaction(chainId, sessionId, sessionData.token, 0n, data as Hex, walletProvider, sessionData.account);
-            // Exit the loop if the transaction is successful
             break;
         } catch (e) {
             console.log(`Attempt ${attempt} failed. Retrying...`);
@@ -109,44 +110,34 @@ function scheduleJob(job: Job) {
   const now = new Date();
   const delay = Math.max(0, job.startTime.getTime() - now.getTime());
 
-  
   job.timeoutId = setTimeout(async () => {
     job.status = 'running';
     saveJob(job);
 
     const duration = job.endTime.getTime() - Math.max(job.startTime.getTime(), now.getTime());
 
-    // Logic to start the job and run on every interval
     if(duration > 0) {
-
-    // Start the job once at the beginning, Add your custom logic here    
-    console.log(`Job ${job.id} triggered at ${new Date().toISOString()}`);
-    await executeJob(job.sessionId)
-
-    job.intervalId = setInterval(async () => {
-
       console.log(`Job ${job.id} triggered at ${new Date().toISOString()}`);
-      await executeJob(job.sessionId)
-      // Start the job after the intervals, Add your custom logic here
-    }, job.interval * 1000);
+      await executeJob(job.sessionId, job.chainId);
 
-    // Logic to end the job
-    job.timeoutId = setTimeout(() => {
-      clearInterval(job.intervalId);
-      job.status = 'completed';
-      saveJob(job);
-      jobs.delete(job.id);
-      console.log(`Job ${job.id} completed at ${new Date().toISOString()}`);
-    }, duration);       
-    }
-    else {
+      job.intervalId = setInterval(async () => {
+        console.log(`Job ${job.id} triggered at ${new Date().toISOString()}`);
+        await executeJob(job.sessionId, job.chainId);
+      }, job.interval * 1000);
+
+      job.timeoutId = setTimeout(() => {
+        clearInterval(job.intervalId);
         job.status = 'completed';
         saveJob(job);
         jobs.delete(job.id);
         console.log(`Job ${job.id} completed at ${new Date().toISOString()}`);
-
+      }, duration);       
+    } else {
+        job.status = 'completed';
+        saveJob(job);
+        jobs.delete(job.id);
+        console.log(`Job ${job.id} completed at ${new Date().toISOString()}`);
     }
-
   }, delay);
 
   jobs.set(job.id, job);
@@ -154,13 +145,17 @@ function scheduleJob(job: Job) {
 }
 
 app.post('/schedule', async (req, res) => {
-  const { sessionId }: ScheduleRequest = req.body;
+  const { sessionId, chainId }: ScheduleRequest = req.body;
 
-  const sessionData = await getSessionData(chainId, walletProvider.address, sessionId)
+  if (!sessionId || !chainId) {
+    return res.status(400).json({ error: 'sessionId and chainId are required' });
+  }
+
+  const sessionData = await getSessionData(chainId, walletProvider.address, sessionId);
 
   const start = new Date(Number(sessionData.validAfter)*1000);
   const end = new Date(Number(sessionData.validUntil)*1000);
-  const interval = Number(sessionData.refreshInterval)
+  const interval = Number(sessionData.refreshInterval);
 
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
     return res.status(400).json({ error: 'Invalid date format' });
@@ -176,7 +171,8 @@ app.post('/schedule', async (req, res) => {
 
   const job: Job = {
     id: `job_${Date.now()}`,
-    sessionId: sessionId,
+    sessionId,
+    chainId,
     startTime: start,
     endTime: end,
     interval,

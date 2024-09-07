@@ -18,8 +18,8 @@ import { ENTRYPOINT_ADDRESS_V07_TYPE, UserOperation } from "permissionless/types
 import { ENTRYPOINT_ADDRESS_V07, getPackedUserOperation } from "permissionless";
 
 
-const autoDCAModule = "0x679f144fCcc63c5Af7bcDb2BAda756f1bd40CE3D"
-
+// const autoDCAModule = "0x679f144fCcc63c5Af7bcDb2BAda756f1bd40CE3D"
+const autoDCAModule = "0xBdE994684051A3caDa9b90Ede0b44A06A9FAC863"
 
 
 
